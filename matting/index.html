@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>抠图工具</title>
+  <script type="module" crossorigin src="/matting/assets/index-CBe-favw.js"></script>
+  <link rel="stylesheet" crossorigin href="/matting/assets/index-D5WpoJRu.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1 class="title">抠图工具</h1>
+      <div class="header-actions">
+        <label class="btn btn-secondary">
+          打开图片
+          <input type="file" id="fileInput" accept="image/*" hidden>
+        </label>
+        <button type="button" class="btn btn-secondary" id="resetBtn" disabled>重置</button>
+        <button type="button" class="btn btn-primary" id="exportPngBtn" disabled>导出 PNG</button>
+        <button type="button" class="btn btn-secondary" id="exportJpgBtn" disabled>导出 JPG</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <aside class="toolbar">
+        <div class="tool-group">
+          <span class="tool-group-label">抠图方式</span>
+          <div class="tool-buttons">
+            <button type="button" class="tool-btn active" data-tool="chroma" title="选取背景色并去除">色度键</button>
+            <button type="button" class="tool-btn" data-tool="wand" title="点击选取相似颜色">魔棒</button>
+          </div>
+        </div>
+        <div class="tool-group">
+          <span class="tool-group-label">手动修饰</span>
+          <div class="tool-buttons">
+            <button type="button" class="tool-btn" data-tool="brush-fg" title="涂抹为前景">前景笔</button>
+            <button type="button" class="tool-btn" data-tool="brush-bg" title="涂抹为背景">背景笔</button>
+            <button type="button" class="tool-btn" data-tool="eraser" title="擦除蒙版">橡皮</button>
+          </div>
+        </div>
+        <div class="tool-options" id="toolOptions">
+          <div class="option-row chroma-options hidden">
+            <label>背景色（点击画面取色）</label>
+            <input type="color" id="chromaColor" value="#00ff00">
+            <input type="text" id="chromaColorHex" value="#00ff00" class="hex-input">
+          </div>
+          <div class="option-row chroma-options hidden">
+            <label>容差</label>
+            <input type="range" id="chromaTolerance" min="0" max="150" value="40">
+            <span id="chromaToleranceVal">40</span>
+          </div>
+          <div class="option-row wand-options hidden">
+            <label>容差</label>
+            <input type="range" id="wandTolerance" min="1" max="100" value="32">
+            <span id="wandToleranceVal">32</span>
+          </div>
+          <div class="option-row brush-options hidden">
+            <label>笔刷大小</label>
+            <input type="range" id="brushSize" min="4" max="80" value="24">
+            <span id="brushSizeVal">24</span>
+          </div>
+        </div>
+        <div class="tool-group run-group">
+          <button type="button" class="btn btn-primary btn-block" id="aiMattingBtn" disabled>AI 抠图</button>
+          <button type="button" class="btn btn-primary btn-block" id="oneClickBtn" disabled>一键抠图</button>
+          <p class="hint">AI 抠图：使用 imgly 模型，浏览器内运行。一键抠图：边缘去底</p>
+        </div>
+        <div class="tool-group run-group chroma-run hidden">
+          <button type="button" class="btn btn-primary btn-block" id="applyChromaBtn" disabled>应用色度键</button>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <div class="canvas-wrap" id="canvasWrap">
+          <canvas id="sourceCanvas"></canvas>
+          <canvas id="maskCanvas"></canvas>
+          <canvas id="previewCanvas"></canvas>
+          <canvas id="overlayCanvas"></canvas>
+          <div class="canvas-placeholder" id="placeholder">
+            <span>请打开图片，或拖拽、粘贴图片到此处</span>
+          </div>
+        </div>
+        <div class="workspace-footer">
+          <span id="statusText">就绪</span>
+          <label class="check-label">
+            <input type="checkbox" id="showMask" checked>
+            显示蒙版
+          </label>
+        </div>
+      </section>
+
+      <aside class="preview-panel">
+        <div class="preview-header">抠图结果</div>
+        <div class="preview-wrap">
+          <canvas id="resultCanvas"></canvas>
+          <div class="preview-placeholder" id="resultPlaceholder">暂无结果</div>
+        </div>
+        <div class="result-bg-options">
+          <span class="result-bg-label">结果背景</span>
+          <div class="result-bg-btns">
+            <button type="button" class="tool-btn result-bg-btn active" data-bg="transparent">透明</button>
+            <button type="button" class="tool-btn result-bg-btn" data-bg="white">白</button>
+            <button type="button" class="tool-btn result-bg-btn" data-bg="custom">自定义</button>
+          </div>
+          <div class="result-bg-color-row hidden" id="resultBgColorRow">
+            <input type="color" id="resultBgColor" value="#ffffff">
+            <input type="text" id="resultBgColorHex" value="#ffffff" class="hex-input">
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+</body>
+</html>
