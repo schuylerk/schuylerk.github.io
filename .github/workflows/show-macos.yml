@@ -1,0 +1,18 @@
+name: Show macOS config
+on:
+  push:
+    branches: [main, master]
+jobs:
+  info:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: macOS & env info
+        run: |
+          sw_vers
+          echo "---"
+          system_profiler SPHardwareDataType
+          echo "---"
+          uname -a
+          echo "---"
+          env | sort
